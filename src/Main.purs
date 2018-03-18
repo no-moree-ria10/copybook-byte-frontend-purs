@@ -6,8 +6,8 @@ import Halogen.Aff as HA
 import Halogen.VDom.Driver (runUI)
 
 -- import Component (component)
-import AppComponent.Input.PlainText(component)
-
+--import AppComponent.Input.PlainText(component)
+import AppComponent.PlainInOut(component)
 
 main :: Eff (HA.HalogenEffects ()) Unit
 main = HA.runHalogenAff do

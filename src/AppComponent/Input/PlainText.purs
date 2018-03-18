@@ -1,6 +1,7 @@
 module AppComponent.Input.PlainText(
     component
-  , Query
+  , Query(..)
+  , Message
 )where 
 
 
