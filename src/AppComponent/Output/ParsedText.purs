@@ -5,11 +5,10 @@ module AppComponent.Output.ParsedText (
 
 import Data.String
 import Prelude
-import Control.Monad.Aff (Aff) 
-import Network.HTTP.Affjax as AX
 
 import AppComponent.Output.PlainText as OTxt
 import Component (component)
+import Control.Monad.Aff (Aff)
 import DOM.Event.Event as DE
 import DOM.HTML.Indexed.ButtonType (renderButtonType)
 import Data.Maybe (Maybe(..))
@@ -22,9 +21,10 @@ import Halogen.Query (Action)
 import Halogen.Query.InputF (InputF(..))
 import Halogen.Query.InputF as Otxt
 import Halogen.VDom (VDom(..))
+import Network.HTTP.Affjax as AX
 
-data Query a = ParseText  String a
-
+data Query a = ParseText String a
+            
 type State = {
     parsed :: String 
   , loading :: Boolean
@@ -34,26 +34,34 @@ type ChildQuery = OTxt.Query
 
 type ChildSlot = Unit
 
-component :: forall eff m. Applicative m =>
-             H.Component HH.HTML Query State Void (Aff (ajax :: AX.AJAX | eff))
+component :: forall eff .
+             H.Component HH.HTML Query String Void (Aff (ajax :: AX.AJAX | eff))
 component = 
     H.parentComponent 
         {
-          initialState: const  
+          initialState: const {parsed: "", loading: false}
         , render 
         , eval 
-        , receiver : const Nothing
+        , receiver 
         }
     where 
 
-    render :: State -> H.ParentHTML Query ChildQuery ChildSlot m
-    render state = HH.div_
-        [ HH.div_ [ HH.slot'  CP.cp1  unit ITxt.component unit (HE.input WriteString) ]
-        , HH.div_ [HH.slot'  CP.cp2 unit OTxt.component state absurd ]
-        ]
+    render :: State -> H.ParentHTML Query ChildQuery ChildSlot (Aff (ajax :: AX.AJAX | eff))
+    render state = if state.loading then 
+            HH.div_ [HH.text "loading.."]    
+        else 
+            HH.pre_ [ HH.slot unit OTxt.component state.parsed absurd ] 
 
-    eval :: Query ~> H.ParentDSL State Query ChildQuery ChildSlot Void m
+    eval :: Query ~> H.ParentDSL State Query ChildQuery ChildSlot Void 
+                    (Aff (ajax :: AX.AJAX | eff))
     eval = case _ of 
-        WriteString st next -> do
-          H.put st
-          pure next
+        ParseText st next -> do
+            H.modify ( _{loading = true})
+            response <- H.liftAff $ AX.get ("http://localhost:8081/copybook-byte?contents=" <> st)
+            H.modify (_ { loading = false, parsed = response.response })
+            pure $ next
+
+    receiver ::  String -> Maybe( Query Unit )
+    receiver string = Just $ ParseText string unit
+
+
