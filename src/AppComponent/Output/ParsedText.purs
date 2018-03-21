@@ -57,7 +57,7 @@ component =
     eval = case _ of 
         ParseText st next -> do
             H.modify ( _{loading = true})
-            response <- H.liftAff $ AX.get ("http://localhost:8081/copybook-byte?contents=" <> st)
+            response <- H.liftAff $ AX.get ("http://app:8081/copybook-byte?contents=" <> st)
             H.modify (_ { loading = false, parsed = response.response })
             pure $ next
 
