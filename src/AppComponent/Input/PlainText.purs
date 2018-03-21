@@ -13,11 +13,13 @@ import Component (component)
 import DOM.Event.Event as DE
 import DOM.HTML.Indexed.ButtonType (renderButtonType)
 import Data.Maybe (Maybe(..))
+import Halogen (ClassName(..))
 import Halogen as H
 import Halogen.Aff.Driver.Eval (eval)
 import Halogen.HTML (a)
 import Halogen.HTML as HH
 import Halogen.HTML.Events as HE
+import Halogen.HTML.Properties (class_, classes)
 import Halogen.Query (Action)
 import Halogen.Query.InputF (InputF(..))
 import Halogen.VDom (VDom(..))
@@ -43,6 +45,8 @@ component =
         HH.div_  [
             HH.textarea [
                 HE.onValueInput (HE.input sendQuery)
+              , classes [ClassName "siimple-textarea", ClassName "siimple-textarea-fluid"] 
+--   <textarea class="siimple-textarea siimple-textarea--fluid">
             ] 
 
         ]
@@ -60,3 +64,4 @@ component =
             H.raise st 
             pure next
         
+
