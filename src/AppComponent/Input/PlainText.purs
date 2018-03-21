@@ -42,7 +42,7 @@ component =
     render state = 
         HH.div_  [
             HH.textarea [
-                HE.onValueChange (HE.input sendQuery)
+                HE.onValueInput (HE.input sendQuery)
             ] 
 
         ]
