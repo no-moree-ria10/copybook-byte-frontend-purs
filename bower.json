@@ -12,6 +12,6 @@
     "purescript-console": "^3.0.0",
     "purescript-halogen": "^2.0.0",
     "siimple": "^3.0.0",
-    "purescript-affjax": "^5.0.0"
+    "purescript-simple-json": "^2.0.1"
   }
 }
