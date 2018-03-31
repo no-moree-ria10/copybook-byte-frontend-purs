@@ -24,11 +24,15 @@ import Halogen.Query (Action)
 import Halogen.Query.InputF (InputF(..))
 import Halogen.VDom (VDom(..))
 
+-- | textarea内のvalueの変化を常にraiseするコンポーネント
+-- | 多少無駄が多いか
+
 data Query a = Reset a
              | SendString String a 
 type State = Unit 
 
 type Message = String
+
 
 component :: forall m. H.Component HH.HTML Query Unit Message m
 component = 
@@ -36,7 +40,7 @@ component =
         { initialState: const unit 
         , render
         , eval
-        , receiver: const ( Just ( Reset unit) )
+        , receiver: const Nothing
         }
     where 
 
